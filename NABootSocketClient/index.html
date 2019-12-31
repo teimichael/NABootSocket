@@ -20,15 +20,42 @@
         <div class="col-md-12">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="connect">WebSocket connection:</label>
-                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
-                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-                    </button>
+                    <label for="token">Token: </label>
+                    <input type="text" id="token" class="form-control" placeholder="e.g. t1">
                 </div>
             </form>
         </div>
-
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="my-uuid">My uuid: </label>
+            <input type="text" id="my-uuid" class="form-control" readonly>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="target-uuid">Target uuid: </label>
+                    <input type="text" id="target-uuid" class="form-control" placeholder="e.g. u2">
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <form class="form-inline">
@@ -39,12 +66,16 @@
             </form>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <table id="conversation" class="table table-striped">
                 <thead>
                 <tr>
+                    <th>Sender</th>
+                    <th>Receiver</th>
                     <th>Conversation</th>
+                    <th>Timestamp</th>
                 </tr>
                 </thead>
                 <tbody id="record">
