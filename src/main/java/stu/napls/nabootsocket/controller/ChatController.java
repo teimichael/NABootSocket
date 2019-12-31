@@ -2,14 +2,12 @@ package stu.napls.nabootsocket.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import stu.napls.nabootsocket.core.exception.Assert;
 import stu.napls.nabootsocket.core.response.Response;
 import stu.napls.nabootsocket.model.Message;
@@ -17,11 +15,8 @@ import stu.napls.nabootsocket.model.User;
 import stu.napls.nabootsocket.service.UserService;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
-//@RestController
 @Controller
-//@RequestMapping("/chat")
 public class ChatController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
@@ -42,6 +37,7 @@ public class ChatController {
 
         // TODO message persistence
         message.setTimestamp(System.currentTimeMillis());
+
 
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
                 .create(SimpMessageType.MESSAGE);

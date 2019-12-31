@@ -1,10 +1,31 @@
 # NABootSocket
 Websocket system for NA Boot Plan
+>Test version
 
-## Start up by docker-compose
+> Test client path: 
+>> ./NABootSocketClient
+
+
+## Component
+- Spring Boot
+- Spring MVC
+- Spring Data JPA
+- Thymeleaf
+- Spring WebSocket
+- Spring Boot Dev Tools
+- MySQL connector
+- Lombok
+- JUnit
+- Swagger
+
+## Command
+
+### Start up container by docker-compose
 ```bash
 docker-compose up
 ```
 
-## Test client path
-./NABootSocketClient
+### Recreate container
+```bash
+docker-compose up --force-recreate
+```
