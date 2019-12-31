@@ -47,7 +47,14 @@ public class ChatController {
                 .create(SimpMessageType.MESSAGE);
         headerAccessor.setSessionId(receiver.getSessionId());
         headerAccessor.setLeaveMutable(true);
-        simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), "/single/message", Response.success(message), headerAccessor.getMessageHeaders());
+
+        if (receiver.getSessionId() != null) {
+            // Receiver is online
+            simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), "/single/message", Response.success(message), headerAccessor.getMessageHeaders());
+        } else {
+            // Receiver is offline
+
+        }
 
         return Response.success(message);
     }

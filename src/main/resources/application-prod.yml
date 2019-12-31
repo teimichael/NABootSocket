@@ -9,3 +9,6 @@ authserver:
 
 appserver:
   url: http://localhost:63343
+
+webserver:
+  url: http://localhost:8080
