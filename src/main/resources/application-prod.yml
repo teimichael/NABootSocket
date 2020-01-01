@@ -5,7 +5,7 @@ spring:
     password: mysql
 
 authserver:
-  url: http://localhost:9000
+  url: http://web-auth:9000
 
 appserver:
   url: http://localhost:63343
