@@ -36,4 +36,11 @@ public class SystemExceptionHandler {
     public Response messageExceptionHandler(SystemException e) {
         return Response.failure(e.getCode(), e.getMessage());
     }
+
+    @MessageExceptionHandler
+    @SendToUser("/auth")
+    public Response messageExceptionHandler(Exception e) {
+        logger.error(e.getMessage());
+        return Response.failure("Internal Error.");
+    }
 }

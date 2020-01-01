@@ -5,7 +5,7 @@ const CODE = {
 };
 
 const GLOBAL = {
-    socketURL: 'http://localhost:9001/websocket'
+    socketURL: 'http://localhost:9010/websocket'
 };
 
 let stompClient = null;
