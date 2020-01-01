@@ -1,12 +1,17 @@
 package stu.napls.nabootsocket.model;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "socket_conversation")
+@EntityListeners(AuditingEntityListener.class)
 @Data
 public class Conversation {
 
@@ -17,16 +22,17 @@ public class Conversation {
     @Column(name = "type")
     private int type;
 
-    @Column(name = "sender")
-    private String sender;
+    @OneToMany(fetch = FetchType.LAZY)
+    @Column(name = "participant")
+    private Set<User> users;
 
-    @Column(name = "receiver")
-    private String receiver;
-
-    @Column(name = "content")
-    private String content;
 
     @Column(name = "createDate")
+    @CreatedDate
     private Date createDate;
+
+    @Column(name = "updateDate")
+    @LastModifiedDate
+    private Date updateDate;
 
 }

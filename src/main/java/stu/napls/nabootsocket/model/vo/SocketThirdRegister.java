@@ -3,8 +3,8 @@ package stu.napls.nabootsocket.model.vo;
 import lombok.Data;
 
 @Data
-public class Auth {
+public class SocketThirdRegister {
 
-    private String token;
+    private String uuid;
 
 }

@@ -64,7 +64,7 @@ function connect() {
 
 function disconnect() {
     if (stompClient !== null) {
-        stompClient.send("/to/logout", {});
+        stompClient.send("/to/unauth", {});
         stompClient.disconnect();
     }
     setConnected(false);

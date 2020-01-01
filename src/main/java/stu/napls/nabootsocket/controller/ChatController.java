@@ -55,16 +55,4 @@ public class ChatController {
         return Response.success(message);
     }
 
-//    @PostMapping("/post")
-//    public Response post(@RequestBody Message message) {
-//        System.out.println(message.getContent());
-//        User user = userService.findUserByUuid("user1");
-//        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-//                .create(SimpMessageType.MESSAGE);
-//        headerAccessor.setSessionId(user.getSessionId());
-//        headerAccessor.setLeaveMutable(true);
-//        simpMessagingTemplate.convertAndSendToUser(user.getSessionId(), "/single/message", message, headerAccessor.getMessageHeaders());
-//        return Response.success("ok");
-//    }
-
 }
