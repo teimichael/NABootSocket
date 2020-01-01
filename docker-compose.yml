@@ -20,7 +20,7 @@ services:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_ROOT_HOST: '%'
     ports:
-      - 3391:3306
+      - 9011:3306
     restart: always
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
 
@@ -43,6 +43,6 @@ services:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_ROOT_HOST: '%'
     ports:
-      - 3390:3306
+      - 9001:3306
     restart: always
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
