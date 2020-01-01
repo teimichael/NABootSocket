@@ -3,6 +3,6 @@ FROM maven:3.6-jdk-8 as builder
 RUN mkdir -p /web
 WORKDIR /web
 
-COPY ./web /web
+COPY ./auth /web
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/auth/nabootauth-0.0.1-SNAPSHOT.jar"]
