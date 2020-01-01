@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web-socket:
+  websocket:
     container_name: nabootsocket-web
     build:
       context: .
@@ -12,7 +12,7 @@ services:
       - mysql-socket
     command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
   
-  web-auth:
+  webauth:
     container_name: nabootauth-web
     build:
       context: .
@@ -23,7 +23,7 @@ services:
     depends_on:
       - mysql-auth
 
-  mysql-socket:
+  mysqlsocket:
     container_name: nabootsocket-mysql
     image: mysql:latest
     environment:
@@ -35,7 +35,7 @@ services:
     restart: always
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
 
-  mysql-auth:
+  mysqlauth:
     container_name: nabootauth-mysql
     image: mysql:latest
     environment:
