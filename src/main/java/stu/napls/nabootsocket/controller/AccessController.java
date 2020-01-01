@@ -42,22 +42,13 @@ public class AccessController {
     @MessageMapping("/auth")
     @SendToUser("/auth")
     public Response auth(SocketAuth socketAuth, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-
-        String uuid;
-
-        // TODO For produce
         AuthVerify authVerify = new AuthVerify();
         authVerify.setToken(socketAuth.getToken());
         AuthResponse authResponse = authRequest.verify(authVerify);
         Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(),"Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, HttpStatus.UNAUTHORIZED.value(), authResponse.getMessage());
-        uuid = authResponse.getData().toString();
 
-        // For independent test
-//        uuid = socketAuth.getToken();
-//        Assert.notNull(uuid, HttpStatus.BAD_REQUEST.value(), "Authentication failed.");
-
-        User user = userService.findUserByUuid(uuid);
+        User user = userService.findUserByUuid(authResponse.getData().toString());
         Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
 
         user.setSessionId(simpMessageHeaderAccessor.getSessionId());
