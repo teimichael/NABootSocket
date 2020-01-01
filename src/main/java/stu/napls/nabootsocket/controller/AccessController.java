@@ -83,7 +83,6 @@ public class AccessController {
         Assert.isTrue(userService.findUserByUuid(socketRegister.getUuid()) == null, "User has been registered");
         User user = new User();
         user.setUuid(socketRegister.getUuid());
-        user.setCreateDate(new Date());
         user.setStatus(StatusCode.NORMAL);
         userService.update(user);
         return Response.success("Register successfully");
