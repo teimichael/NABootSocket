@@ -38,7 +38,6 @@ public class ChatController {
         // TODO message persistence
         message.setTimestamp(System.currentTimeMillis());
 
-
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
                 .create(SimpMessageType.MESSAGE);
         headerAccessor.setSessionId(receiver.getSessionId());

@@ -24,7 +24,10 @@ function setConnected(connected) {
 function connect() {
     const socket = new SockJS(GLOBAL.socketURL);
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
+    const headers = {
+        name: 'michael'
+    };
+    stompClient.connect(headers, function (frame) {
         const url = stompClient.ws._transport.url;
         console.log(url);
         setConnected(true);

@@ -45,7 +45,7 @@ public class AccessController {
         AuthVerify authVerify = new AuthVerify();
         authVerify.setToken(socketAuth.getToken());
         AuthResponse authResponse = authRequest.verify(authVerify);
-        Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(),"Authentication failed.");
+        Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(), "Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, HttpStatus.UNAUTHORIZED.value(), authResponse.getMessage());
 
         User user = userService.findUserByUuid(authResponse.getData().toString());
