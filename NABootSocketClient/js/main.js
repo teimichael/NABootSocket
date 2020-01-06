@@ -4,8 +4,11 @@ const CODE = {
     unAuth: 401
 };
 
+const SERVER = 'http://localhost:9010';
+
 const GLOBAL = {
-    socketURL: 'http://localhost:9010/websocket'
+    loginURL: SERVER + '/access/login',
+    socketURL: SERVER + '/nabootsocket'
 };
 
 let stompClient = null;
@@ -24,35 +27,42 @@ function setConnected(connected) {
 function connect() {
     const socket = new SockJS(GLOBAL.socketURL);
     stompClient = Stomp.over(socket);
-    const headers = {
-        name: 'michael'
-    };
-    stompClient.connect(headers, function (frame) {
-        const url = stompClient.ws._transport.url;
-        console.log(url);
-        setConnected(true);
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/user/auth', function (data) {
-            data = JSON.parse(data.body);
-            // Authentication channel
-            if (data.code === CODE.success) {
-                $("#my-uuid").val(data.data.uuid);
-            } else if (data.code === CODE.unAuth) {
-                alert(data.message);
-                disconnect();
-            } else if (data.code === CODE.failure) {
-                alert(data.message);
+
+    stompClient.connect({}, function () {
+        // Parse session id
+        const urlSlice = stompClient.ws._transport.url.split('/');
+        const sessionId = urlSlice[urlSlice.length - 2];
+
+        // Login by HTTP
+        const loginParam = {
+            sessionId: sessionId,
+            authLogin: {
+                username: $('#username').val(),
+                password: $('#password').val()
             }
+        };
+        $.ajax({
+            type: "POST",
+            url: GLOBAL.loginURL,
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(loginParam),
+            success: function (data) {
+                if (data.code === CODE.success) {
+                    $('#my-uuid').val(data.data.uuid);
+                    setConnected(true);
+                    console.log('Connected');
+                } else {
+                    alert(data.message);
+                    disconnect();
+                }
+            }
+
         });
 
-        // Authentication
-        const auth = {
-            token: $("#token").val()
-        };
-        stompClient.send("/to/auth", {}, JSON.stringify(auth));
 
-        // Chat channel
-        stompClient.subscribe('/user/single/message', function (data) {
+        // Private chat channel
+        stompClient.subscribe('/user/private/message', function (data) {
             data = JSON.parse(data.body);
             if (data.code === CODE.success) {
                 const message = data.data;
@@ -67,7 +77,6 @@ function connect() {
 
 function disconnect() {
     if (stompClient !== null) {
-        stompClient.send("/to/unauth", {});
         stompClient.disconnect();
     }
     setConnected(false);

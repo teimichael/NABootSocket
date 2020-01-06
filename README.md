@@ -2,8 +2,10 @@
 Websocket system for NA Boot Plan
 >Test version
 
-> Test client path: 
->> ./NABootSocketClient
+> Test client:
+>> Path: ./NABootSocketClient
+>
+>> Deploy on server for ajax request
 
 
 ## Component

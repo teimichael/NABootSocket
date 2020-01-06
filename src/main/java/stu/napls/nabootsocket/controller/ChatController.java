@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+import stu.napls.nabootsocket.core.dictionary.APIConst;
 import stu.napls.nabootsocket.core.exception.Assert;
 import stu.napls.nabootsocket.core.response.Response;
 import stu.napls.nabootsocket.model.Message;
@@ -28,7 +29,7 @@ public class ChatController {
     private UserService userService;
 
     @MessageMapping("/chat/send")
-    @SendToUser("/single/message")
+    @SendToUser(APIConst.PRIVATE_CHAT)
     public Response send(Message message, SimpMessageHeaderAccessor accessor) {
         User sender = userService.findUserBySessionId(accessor.getSessionId());
         Assert.isTrue(sender != null && message.getSender().equals(sender.getUuid()), "Unauthorized channel.");
@@ -45,7 +46,7 @@ public class ChatController {
 
         if (receiver.getSessionId() != null) {
             // Receiver is online
-            simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), "/single/message", Response.success(message), headerAccessor.getMessageHeaders());
+            simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), APIConst.PRIVATE_CHAT, Response.success(message), headerAccessor.getMessageHeaders());
         } else {
             // Receiver is offline
 

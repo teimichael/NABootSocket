@@ -14,22 +14,15 @@ public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
-    private static int sessionCounter = 0;
-
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent sessionConnectedEvent) {
-        logger.info(String.valueOf(++sessionCounter));
-        GenericMessage<?> genericMessage = (GenericMessage<?>) sessionConnectedEvent.getMessage().getHeaders().get("simpConnectMessage");
-        Assert.notNull(genericMessage, "Connection failed.");
-        Object nativeHeaders = genericMessage.getHeaders().get("nativeHeaders");
-        Assert.notNull(nativeHeaders, "Connection failed.");
-//        System.out.println(nativeHeaders.toString());
+
+//        System.out.println(sessionConnectedEvent.getMessage().getHeaders());
 
     }
 
     @EventListener(SessionDisconnectEvent.class)
     public void handleWebsocketDisconnectListener(SessionDisconnectEvent event) {
-        logger.info(String.valueOf(--sessionCounter));
     }
 
 }

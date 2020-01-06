@@ -4,14 +4,8 @@ package stu.napls.nabootsocket.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import stu.napls.nabootsocket.auth.annotation.Auth;
 import stu.napls.nabootsocket.auth.model.*;
 import stu.napls.nabootsocket.auth.request.AuthRequest;
@@ -20,7 +14,7 @@ import stu.napls.nabootsocket.core.dictionary.StatusCode;
 import stu.napls.nabootsocket.core.exception.Assert;
 import stu.napls.nabootsocket.core.response.Response;
 import stu.napls.nabootsocket.model.User;
-import stu.napls.nabootsocket.model.vo.SocketAuth;
+import stu.napls.nabootsocket.model.vo.LoginVO;
 import stu.napls.nabootsocket.model.vo.SocketThirdRegister;
 import stu.napls.nabootsocket.service.UserService;
 
@@ -39,33 +33,33 @@ public class AccessController {
     @Resource
     private UserService userService;
 
-    @MessageMapping("/auth")
-    @SendToUser("/auth")
-    public Response auth(SocketAuth socketAuth, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        AuthVerify authVerify = new AuthVerify();
-        authVerify.setToken(socketAuth.getToken());
-        AuthResponse authResponse = authRequest.verify(authVerify);
-        Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(), "Authentication failed.");
-        Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, HttpStatus.UNAUTHORIZED.value(), authResponse.getMessage());
+//    @MessageMapping("/auth")
+//    @SendToUser("/auth")
+//    public Response auth(SocketAuth socketAuth, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+//        AuthVerify authVerify = new AuthVerify();
+//        authVerify.setToken(socketAuth.getToken());
+//        AuthResponse authResponse = authRequest.verify(authVerify);
+//        Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(), "Authentication failed.");
+//        Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, HttpStatus.UNAUTHORIZED.value(), authResponse.getMessage());
+//
+//        User user = userService.findUserByUuid(authResponse.getData().toString());
+//        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
+//
+//        user.setSessionId(simpMessageHeaderAccessor.getSessionId());
+//        userService.update(user);
+//
+//        return Response.success("Login successfully.", user);
+//    }
 
-        User user = userService.findUserByUuid(authResponse.getData().toString());
-        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
-
-        user.setSessionId(simpMessageHeaderAccessor.getSessionId());
-        userService.update(user);
-
-        return Response.success("Login successfully.", user);
-    }
-
-    @MessageMapping("/unauth")
-    @SendToUser("/auth")
-    public Response unauth(SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        User user = userService.findUserBySessionId(simpMessageHeaderAccessor.getSessionId());
-        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "Authentication failed.");
-        user.setSessionId(null);
-        userService.update(user);
-        return Response.success("Logout successfully", user);
-    }
+//    @MessageMapping("/unauth")
+//    @SendToUser("/auth")
+//    public Response unauth(SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+//        User user = userService.findUserBySessionId(simpMessageHeaderAccessor.getSessionId());
+//        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "Authentication failed.");
+//        user.setSessionId(null);
+//        userService.update(user);
+//        return Response.success("Logout successfully", user);
+//    }
 
     @PostMapping("/third/register")
     @ResponseBody
@@ -80,18 +74,31 @@ public class AccessController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Response login(@RequestBody AuthLogin authLogin) {
-        AuthResponse authResponse = authRequest.login(authLogin);
-
+    public Response login(@RequestBody LoginVO loginVO) {
+        // Obtain token
+        AuthResponse authResponse = authRequest.login(loginVO.getAuthLogin());
         Assert.notNull(authResponse, "Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
 
-        return Response.success("Login successfully.", authResponse.getData());
+        // Obtain UUID
+        AuthVerify authVerify = new AuthVerify();
+        authVerify.setToken(authResponse.getData().toString());
+        authResponse = authRequest.verify(authVerify);
+        Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
+
+        User user = userService.findUserByUuid(authResponse.getData().toString());
+        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
+
+        // Update session
+        user.setSessionId(loginVO.getSessionId());
+        userService.update(user);
+
+        return Response.success("Login successfully.", user);
     }
 
     @PostMapping("/register")
     @ResponseBody
-    public Response register(String username, String password) {
+    public Response register(@RequestParam String username, @RequestParam String password) {
         AuthPreregister authPreregister = new AuthPreregister();
         authPreregister.setUsername(username);
         authPreregister.setPassword(password);

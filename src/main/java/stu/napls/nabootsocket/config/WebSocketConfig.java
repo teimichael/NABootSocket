@@ -22,13 +22,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/from", "/single", "/auth");
+        config.enableSimpleBroker("/from", "/private");
         config.setApplicationDestinationPrefixes("/to");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket")
+        registry.addEndpoint("/nabootsocket")
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
