@@ -6,12 +6,18 @@ import stu.napls.nabootsocket.repository.MessageRepository;
 import stu.napls.nabootsocket.service.MessageService;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
 
     @Resource
     private MessageRepository messageRepository;
+
+    @Override
+    public List<Message> findByConversationId(Long conversationId) {
+        return messageRepository.findByConversationId(conversationId);
+    }
 
     @Override
     public Message update(Message message) {
