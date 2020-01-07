@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
 
+    Conversation findByUuid(String uuid);
+
     List<Conversation> findByUsersContaining(String uuid);
 
     List<Conversation> findByTypeAndUsersContaining(int type, String uuid);

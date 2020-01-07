@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import stu.napls.nabootsocket.core.dictionary.APIConst;
 import stu.napls.nabootsocket.core.response.Response;
 
 /**
@@ -32,13 +33,13 @@ public class SystemExceptionHandler {
     }
 
     @MessageExceptionHandler
-    @SendToUser("/auth")
+    @SendToUser(APIConst.NOTIFY_CHANNEL)
     public Response messageExceptionHandler(SystemException e) {
         return Response.failure(e.getCode(), e.getMessage());
     }
 
     @MessageExceptionHandler
-    @SendToUser("/auth")
+    @SendToUser(APIConst.NOTIFY_CHANNEL)
     public Response messageExceptionHandler(Exception e) {
         logger.error(e.getMessage());
         return Response.failure("Internal Error.");

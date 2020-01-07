@@ -1,7 +1,6 @@
 const CODE = {
     success: 200,
-    failure: -1,
-    unAuth: 401
+    failure: -1
 };
 
 const SERVER = 'http://localhost:9010';
@@ -9,6 +8,17 @@ const SERVER = 'http://localhost:9010';
 const GLOBAL = {
     loginURL: SERVER + '/access/login',
     socketURL: SERVER + '/nabootsocket'
+};
+
+const SUBSCRIBE = {
+    privateChannel: '/user/private/message',
+    groupChannel: '/user/group/message',
+    notifyChannel: '/user/notify'
+};
+
+const SEND = {
+    privateChannel: '/to/private/send',
+    groupChannel: '/to/group/send'
 };
 
 let stompClient = null;
@@ -54,7 +64,29 @@ function connect() {
                     console.log('Connected');
 
                     // Subscribe private chat channel
-                    stompClient.subscribe('/user/private/message', function (data) {
+                    stompClient.subscribe(SUBSCRIBE.privateChannel, function (data) {
+                        data = JSON.parse(data.body);
+                        if (data.code === CODE.success) {
+                            const message = data.data;
+                            showRecord(message)
+                        } else {
+                            alert(data.message)
+                        }
+                    });
+
+                    // Subscribe group chat channel
+                    stompClient.subscribe(SUBSCRIBE.groupChannel, function (data) {
+                        data = JSON.parse(data.body);
+                        if (data.code === CODE.success) {
+                            const message = data.data;
+                            showRecord(message)
+                        } else {
+                            alert(data.message)
+                        }
+                    });
+
+                    // Subscribe notify channel
+                    stompClient.subscribe(SUBSCRIBE.notifyChannel, function (data) {
                         data = JSON.parse(data.body);
                         if (data.code === CODE.success) {
                             const message = data.data;
@@ -83,13 +115,22 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendMessage() {
+function sendPrivateMessage() {
     const message = {
         sender: $("#my-uuid").val(),
         receiver: $("#target-uuid").val(),
-        content: $("#message").val()
+        content: $("#private-message").val()
     };
-    stompClient.send("/to/chat/send", {}, JSON.stringify(message));
+    stompClient.send(SEND.privateChannel, {}, JSON.stringify(message));
+}
+
+function sendGroupMessage() {
+    const message = {
+        sender: $("#my-uuid").val(),
+        receiver: $("#group-uuid").val(),
+        content: $("#group-message").val()
+    };
+    stompClient.send(SEND.groupChannel, {}, JSON.stringify(message));
 }
 
 function showRecord(message) {
@@ -112,7 +153,10 @@ $(function () {
     $("#disconnect").click(function () {
         disconnect();
     });
-    $("#send").click(function () {
-        sendMessage();
+    $("#send-private").click(function () {
+        sendPrivateMessage();
+    });
+    $("#send-group").click(function () {
+        sendGroupMessage();
     });
 });

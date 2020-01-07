@@ -8,7 +8,6 @@ import stu.napls.nabootsocket.core.dictionary.StatusCode;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "socket_conversation")
@@ -20,11 +19,18 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "uuid")
+    private String uuid;
+
     @Column(name = "type", nullable = false)
     private int type;
 
     @Column(name = "users")
     private String users;
+
+    @OneToOne
+    @JoinColumn(name = "lastMessage", referencedColumnName = "id")
+    private Message lastMessage;
 
     @Column(name = "createDate")
     @CreatedDate
@@ -36,9 +42,5 @@ public class Conversation {
 
     @Column(name = "status", columnDefinition = "integer default " + StatusCode.NORMAL)
     private int status;
-
-    @OneToOne
-    @JoinColumn(name = "lastMessage", referencedColumnName = "id")
-    private Message lastMessage;
 
 }

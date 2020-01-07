@@ -17,6 +17,9 @@
 </noscript>
 <p>Use <a href="http://localhost:9010/swagger-ui.html#/access-controller/registerUsingPOST">Register</a> for
     registration.</p>
+<p>Use <a href="http://localhost:9010/swagger-ui.html#/group-controller/createUsingPOST">CreateGroup</a> for
+    group creating.</p>
+<p>Fill target uuid for private conversation and group id for group conversation.</p>
 <div id="main-content" class="container">
 
     <div class="row">
@@ -63,9 +66,27 @@
         <div class="col-md-12">
             <form class="form-inline">
                 <div class="form-group">
-                    <input type="text" id="message" class="form-control" placeholder="Input something...">
+                    <input type="text" id="private-message" class="form-control" placeholder="Input private message...">
                 </div>
-                <button id="send" class="btn btn-primary" type="submit">Send</button>
+                <button id="send-private" class="btn btn-primary" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="group-uuid">Group uuid: </label>
+            <input type="text" id="group-uuid" class="form-control" placeholder="">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" id="group-message" class="form-control" placeholder="Input group message...">
+                </div>
+                <button id="send-group" class="btn btn-primary" type="submit">Send</button>
             </form>
         </div>
     </div>

@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface ConversationService {
 
-    List<Conversation> findByUuid(String uuid);
+    Conversation findById(long id);
 
-    Conversation findPrivateByUuids(String uuid0, String uuid1);
+    Conversation findByUuid(String uuid);
+
+    List<Conversation> findByUserUuid(String uuid);
+
+    Conversation findPrivateByUserUuids(String uuid0, String uuid1);
 
     Conversation update(Conversation conversation);
 }
