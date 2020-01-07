@@ -4,18 +4,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import stu.napls.nabootsocket.core.dictionary.APIConst;
+import stu.napls.nabootsocket.core.dictionary.AppCode;
 import stu.napls.nabootsocket.core.exception.Assert;
 import stu.napls.nabootsocket.core.response.Response;
+import stu.napls.nabootsocket.model.Conversation;
 import stu.napls.nabootsocket.model.Message;
+import stu.napls.nabootsocket.service.MessageService;
+import stu.napls.nabootsocket.util.SimpMessageHeaderAccessorFactory;
 import stu.napls.nabootsocket.model.User;
+import stu.napls.nabootsocket.service.ConversationService;
 import stu.napls.nabootsocket.service.UserService;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class ChatController {
@@ -28,6 +34,12 @@ public class ChatController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private MessageService messageService;
+
+    @Resource
+    private ConversationService conversationService;
+
     @MessageMapping("/chat/send")
     @SendToUser(APIConst.PRIVATE_CHAT)
     public Response send(Message message, SimpMessageHeaderAccessor accessor) {
@@ -36,21 +48,33 @@ public class ChatController {
         User receiver = userService.findUserByUuid(message.getReceiver());
         Assert.notNull(receiver, "Receiver does not exist.");
 
-        // TODO message persistence
         message.setTimestamp(System.currentTimeMillis());
-
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                .create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(receiver.getSessionId());
-        headerAccessor.setLeaveMutable(true);
-
         if (receiver.getSessionId() != null) {
             // Receiver is online
-            simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), APIConst.PRIVATE_CHAT, Response.success(message), headerAccessor.getMessageHeaders());
+            message.setReadStatus(AppCode.Message.READ.getValue());
+            simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), APIConst.PRIVATE_CHAT, Response.success(message), SimpMessageHeaderAccessorFactory.getMessageHeaders(receiver.getSessionId()));
         } else {
             // Receiver is offline
-
+            message.setReadStatus(AppCode.Message.UNREAD.getValue());
         }
+
+        // Update message
+        message = messageService.update(message);
+
+        // Update conversation
+        Conversation conversation = conversationService.findPrivateByUsers(sender.getUuid(), receiver.getUuid());
+
+        // Create new conversation if null
+        if (conversation == null) {
+            conversation = new Conversation();
+            conversation.setType(AppCode.Conversation.PRIVATE.getValue());
+            Set<User> users = new HashSet<>();
+            users.add(sender);
+            users.add(receiver);
+            conversation.setUsers(users);
+        }
+        conversation.setLastMessage(message);
+        conversationService.update(conversation);
 
         return Response.success(message);
     }

@@ -1,6 +1,7 @@
 package stu.napls.nabootsocket.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import stu.napls.nabootsocket.core.response.Response;
@@ -17,9 +18,9 @@ public class ConversationController {
     @Resource
     private ConversationService conversationService;
 
-    @GetMapping("/get/{}")
-    private Response get() {
-        List<Conversation> conversations = conversationService.findByUsersUuid("u0");
+    @GetMapping("/get/user/{uuid}")
+    private Response getByUser(@PathVariable("uuid") String uuid) {
+        List<Conversation> conversations = conversationService.findByUsersUuid(uuid);
         return Response.success(conversations);
     }
 }

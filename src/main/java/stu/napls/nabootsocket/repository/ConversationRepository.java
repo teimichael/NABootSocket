@@ -9,5 +9,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 
     List<Conversation> findByUsersUuid(String uuid);
 
+    List<Conversation> findByTypeAndUsersUuid(int type, String uuid);
+
 }
 

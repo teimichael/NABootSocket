@@ -10,7 +10,6 @@ import stu.napls.nabootsocket.service.UserService;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @SpringBootTest

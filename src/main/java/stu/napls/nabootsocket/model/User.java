@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import stu.napls.nabootsocket.core.dictionary.StatusCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,7 +18,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "uuid")
+    @Column(name = "uuid", nullable = false, unique = true)
     private String uuid;
 
     @Column(name = "sessionId")
@@ -31,6 +32,6 @@ public class User {
     @LastModifiedDate
     private Date updateDate;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "integer default " + StatusCode.NORMAL)
     private int status;
 }

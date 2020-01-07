@@ -1,7 +1,9 @@
 package stu.napls.nabootsocket.service.impl;
 
 import org.springframework.stereotype.Service;
+import stu.napls.nabootsocket.core.dictionary.AppCode;
 import stu.napls.nabootsocket.model.Conversation;
+import stu.napls.nabootsocket.model.User;
 import stu.napls.nabootsocket.repository.ConversationRepository;
 import stu.napls.nabootsocket.service.ConversationService;
 
@@ -17,6 +19,25 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public List<Conversation> findByUsersUuid(String uuid) {
         return conversationRepository.findByUsersUuid(uuid);
+    }
+
+    @Override
+    public Conversation findPrivateByUsers(String uuid0, String uuid1) {
+        List<Conversation> conversations = conversationRepository.findByTypeAndUsersUuid(AppCode.Conversation.PRIVATE.getValue(), uuid0);
+        Conversation result = null;
+
+        R: for (Conversation conversation :
+                conversations) {
+            for (User user :
+                    conversation.getUsers()) {
+                if (uuid1.equals(user.getUuid())) {
+                    result = conversation;
+                    break R;
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override

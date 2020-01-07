@@ -52,24 +52,24 @@ function connect() {
                     $('#my-uuid').val(data.data.uuid);
                     setConnected(true);
                     console.log('Connected');
+
+                    // Subscribe private chat channel
+                    stompClient.subscribe('/user/private/message', function (data) {
+                        data = JSON.parse(data.body);
+                        if (data.code === CODE.success) {
+                            const message = data.data;
+                            showRecord(message)
+                        } else {
+                            alert(data.message)
+                        }
+                    });
+
                 } else {
                     alert(data.message);
                     disconnect();
                 }
             }
 
-        });
-
-
-        // Private chat channel
-        stompClient.subscribe('/user/private/message', function (data) {
-            data = JSON.parse(data.body);
-            if (data.code === CODE.success) {
-                const message = data.data;
-                showRecord(message)
-            } else {
-                alert(data.message)
-            }
         });
 
     });

@@ -1,9 +1,11 @@
 package stu.napls.nabootsocket.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import stu.napls.nabootsocket.core.dictionary.StatusCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,13 +21,12 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     private int type;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @Column(name = "participant")
     private Set<User> users;
-
 
     @Column(name = "createDate")
     @CreatedDate
@@ -34,5 +35,12 @@ public class Conversation {
     @Column(name = "updateDate")
     @LastModifiedDate
     private Date updateDate;
+
+    @Column(name = "status", columnDefinition = "integer default " + StatusCode.NORMAL)
+    private int status;
+
+    @OneToOne
+    @JoinColumn(name = "lastMessage", referencedColumnName = "id")
+    private Message lastMessage;
 
 }

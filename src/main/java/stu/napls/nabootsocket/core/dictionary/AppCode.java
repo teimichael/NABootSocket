@@ -14,4 +14,15 @@ public interface AppCode {
             this.value = value;
         }
     }
+
+    @Getter
+    enum Message {
+        UNREAD(0), READ(1);
+
+        private final int value;
+
+        Message(int value) {
+            this.value = value;
+        }
+    }
 }
