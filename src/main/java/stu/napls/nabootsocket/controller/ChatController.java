@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import stu.napls.nabootsocket.core.dictionary.APIConst;
 import stu.napls.nabootsocket.core.dictionary.AppCode;
+import stu.napls.nabootsocket.core.dictionary.ConversationConst;
 import stu.napls.nabootsocket.core.exception.Assert;
 import stu.napls.nabootsocket.core.response.Response;
 import stu.napls.nabootsocket.model.Conversation;
@@ -58,21 +59,19 @@ public class ChatController {
             message.setReadStatus(AppCode.Message.UNREAD.getValue());
         }
 
-        // Update message
-        message = messageService.update(message);
-
         // Update conversation
-        Conversation conversation = conversationService.findPrivateByUsers(sender.getUuid(), receiver.getUuid());
+        Conversation conversation = conversationService.findPrivateByUuids(sender.getUuid(), receiver.getUuid());
 
-        // Create new conversation if null
+        // Create new conversation
         if (conversation == null) {
             conversation = new Conversation();
             conversation.setType(AppCode.Conversation.PRIVATE.getValue());
-            Set<User> users = new HashSet<>();
-            users.add(sender);
-            users.add(receiver);
-            conversation.setUsers(users);
+            conversation.setUsers(sender.getUuid() + ConversationConst.SPLITTER + receiver.getUuid());
+            conversation = conversationService.update(conversation);
         }
+
+        message.setConversationId(conversation.getId());
+        message = messageService.update(message);
         conversation.setLastMessage(message);
         conversationService.update(conversation);
 

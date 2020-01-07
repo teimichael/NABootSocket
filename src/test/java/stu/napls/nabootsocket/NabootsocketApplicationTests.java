@@ -23,13 +23,7 @@ class NabootsocketApplicationTests {
 
     @Test
     void contextLoads() {
-        Conversation conversation = new Conversation();
-        Set<User> users = new HashSet<>();
-        users.add(userService.findUserByUuid("u0"));
-        users.add(userService.findUserByUuid("u1"));
-        conversation.setType(AppCode.Conversation.GROUP.getValue());
-        conversation.setUsers(users);
-        conversationService.update(conversation);
+
     }
 
 }

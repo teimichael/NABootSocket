@@ -1,6 +1,5 @@
 package stu.napls.nabootsocket.model;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,9 +23,8 @@ public class Conversation {
     @Column(name = "type", nullable = false)
     private int type;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @Column(name = "participant")
-    private Set<User> users;
+    @Column(name = "users")
+    private String users;
 
     @Column(name = "createDate")
     @CreatedDate

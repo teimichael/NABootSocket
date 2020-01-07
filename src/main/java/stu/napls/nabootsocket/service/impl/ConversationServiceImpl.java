@@ -17,23 +17,20 @@ public class ConversationServiceImpl implements ConversationService {
     private ConversationRepository conversationRepository;
 
     @Override
-    public List<Conversation> findByUsersUuid(String uuid) {
-        return conversationRepository.findByUsersUuid(uuid);
+    public List<Conversation> findByUuid(String uuid) {
+        return conversationRepository.findByUsersContaining(uuid);
     }
 
     @Override
-    public Conversation findPrivateByUsers(String uuid0, String uuid1) {
-        List<Conversation> conversations = conversationRepository.findByTypeAndUsersUuid(AppCode.Conversation.PRIVATE.getValue(), uuid0);
+    public Conversation findPrivateByUuids(String uuid0, String uuid1) {
+        List<Conversation> conversations = conversationRepository.findByTypeAndUsersContaining(AppCode.Conversation.PRIVATE.getValue(), uuid0);
         Conversation result = null;
 
-        R: for (Conversation conversation :
+        for (Conversation conversation :
                 conversations) {
-            for (User user :
-                    conversation.getUsers()) {
-                if (uuid1.equals(user.getUuid())) {
-                    result = conversation;
-                    break R;
-                }
+            if (conversation.getUsers().contains(uuid1)) {
+                result = conversation;
+                break;
             }
         }
 

@@ -34,6 +34,9 @@ public class Message {
     @Column(name = "readStatus")
     private int readStatus;
 
+    @Column(name = "conversationId")
+    private Long conversationId;
+
     @Column(name = "createDate")
     @CreatedDate
     private Date createDate;
