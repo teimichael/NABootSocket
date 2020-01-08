@@ -1,6 +1,8 @@
 package stu.napls.nabootsocket;
 
 import org.junit.jupiter.api.Test;
+import stu.napls.nabootsocket.core.dictionary.MessageConst;
+import stu.napls.nabootsocket.util.ChatUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,17 +13,10 @@ public class BasicTest {
 
     @Test
     public void test() {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", "ding");
-        String mapString = map.toString();
-        System.out.println(mapString);
-        Map<String, String> map1 = convertWithStream(mapString);
-        System.out.println(map1.get("name"));
+//        String record = "d8a12a1f-632e-4cc1-81bd-1558c77ffcc1";
+//        String records = "d8a12a1f-632e-4cc1-81bd-1558c77ffcc3:123123,d8a12a1f-632e-4cc1-81bd-1558c77ffcc1:1313";
+        String list = ChatUtil.getNewUnreadList("d8a12a1f-632e-4cc1-81bd-1558c77ffcc2:1,d8a12a1f-632e-4cc1-81bd-1558c77ffcc1:1,d8a12a1f-632e-4cc1-81bd-1558c77ffcc3:3", "d8a12a1f-632e-4cc1-81bd-1558c77ffcc3", ChatUtil.UNREAD_CLEAR);
+        System.out.println(list);
     }
 
-    public Map<String, String> convertWithStream(String mapAsString) {
-        return Arrays.stream(mapAsString.replace("{","").replace("}","").split(","))
-                .map(entry -> entry.split("="))
-                .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
-    }
 }

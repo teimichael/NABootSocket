@@ -18,9 +18,11 @@ import stu.napls.nabootsocket.model.User;
 import stu.napls.nabootsocket.service.ConversationService;
 import stu.napls.nabootsocket.service.MessageService;
 import stu.napls.nabootsocket.service.UserService;
+import stu.napls.nabootsocket.util.ChatUtil;
 import stu.napls.nabootsocket.util.SimpMessageHeaderAccessorFactory;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 
 @Controller
 public class GroupChatController {
@@ -47,22 +49,39 @@ public class GroupChatController {
         Conversation conversation = conversationService.findByUuid(message.getReceiver());
         Assert.notNull(conversation, "Group does not exist.");
 
+        // Set unique fields
+        message.setUuid(UUID.randomUUID().toString());
         message.setTimestamp(System.currentTimeMillis());
 
+        // Set conversation UUID
+        message.setConversationUuid(conversation.getUuid());
+
+        // Send messages
         String[] users = conversation.getUsers().split(ConversationConst.SPLITTER);
+        User receiver;
         String receiverSessionId;
         for (int i = 0; i < users.length; i++) {
-            receiverSessionId = userService.findUserByUuid(users[i]).getSessionId();
-            if (receiverSessionId != null && !receiverSessionId.equals(sender.getSessionId())) {
-                simpMessagingTemplate.convertAndSendToUser(receiverSessionId, APIConst.GROUP_CHANNEL, Response.success(message), SimpMessageHeaderAccessorFactory.getMessageHeaders(receiverSessionId));
+            receiver = userService.findUserByUuid(users[i]);
+            receiverSessionId = receiver.getSessionId();
+            if (receiverSessionId != null) {
+                // Receiver is online
+                if (!receiverSessionId.equals(sender.getSessionId())) {
+                    simpMessagingTemplate.convertAndSendToUser(receiverSessionId, APIConst.GROUP_CHANNEL, Response.success(message), SimpMessageHeaderAccessorFactory.getMessageHeaders(receiverSessionId));
+                }
+            } else {
+                // Receiver is offline
+                // Update unread list
+                receiver.setUnreadList(ChatUtil.getNewUnreadList(receiver.getUnreadList(), conversation.getUuid(), ChatUtil.UNREAD_ADD));
+                userService.update(receiver);
             }
         }
-        // TODO Do not judge whether the message was read for now
-        message.setReadStatus(MessageConst.READ);
 
-        message.setConversationId(conversation.getId());
+        // Message persistence
         message = messageService.update(message);
+
         conversation.setLastMessage(message);
+
+        // Conversation persistence
         conversationService.update(conversation);
 
         return Response.success(message);

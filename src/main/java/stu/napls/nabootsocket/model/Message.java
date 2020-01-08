@@ -19,6 +19,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "uuid")
+    private String uuid;
+
     @Column(name = "sender")
     private String sender;
 
@@ -31,11 +34,8 @@ public class Message {
     @Column(name = "timestamp")
     private Long timestamp;
 
-    @Column(name = "readStatus")
-    private int readStatus;
-
-    @Column(name = "conversationId")
-    private Long conversationId;
+    @Column(name = "conversationUuid")
+    private String conversationUuid;
 
     @Column(name = "createDate")
     @CreatedDate

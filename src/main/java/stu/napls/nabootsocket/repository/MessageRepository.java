@@ -6,7 +6,7 @@ import stu.napls.nabootsocket.model.Message;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByConversationId(long conversationId);
+    List<Message> findByConversationUuid(String conversationId);
 
 }
 

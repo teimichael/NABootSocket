@@ -19,9 +19,9 @@ public class HistoryController {
     private MessageService messageService;
 
     @ApiOperation("Get history of the conversation.")
-    @GetMapping("/get/{conversationId}")
-    private Response getByConversation(@PathVariable("conversationId") Long conversationId) {
-        return Response.success(messageService.findByConversationId(conversationId));
+    @GetMapping("/get/{conversationUuid}")
+    private Response getByConversation(@PathVariable("conversationUuid") String conversationUuid) {
+        return Response.success(messageService.findByConversationUuid(conversationUuid));
     }
 
 }

@@ -18,9 +18,11 @@ import stu.napls.nabootsocket.model.User;
 import stu.napls.nabootsocket.service.ConversationService;
 import stu.napls.nabootsocket.service.MessageService;
 import stu.napls.nabootsocket.service.UserService;
+import stu.napls.nabootsocket.util.ChatUtil;
 import stu.napls.nabootsocket.util.SimpMessageHeaderAccessorFactory;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 
 @Controller
 public class PrivateChatController {
@@ -47,33 +49,51 @@ public class PrivateChatController {
         User receiver = userService.findUserByUuid(message.getReceiver());
         Assert.notNull(receiver, "Receiver does not exist.");
 
+        // Set unique fields
+        message.setUuid(UUID.randomUUID().toString());
         message.setTimestamp(System.currentTimeMillis());
+
+        // Get conversation
+        Conversation conversation = getConversation(sender.getUuid(), receiver.getUuid());
+
+        // Set conversation UUID
+        message.setConversationUuid(conversation.getUuid());
+
+        // Send message
         if (receiver.getSessionId() != null) {
             // Receiver is online
-            message.setReadStatus(MessageConst.READ);
             simpMessagingTemplate.convertAndSendToUser(receiver.getSessionId(), APIConst.PRIVATE_CHANNEL, Response.success(message), SimpMessageHeaderAccessorFactory.getMessageHeaders(receiver.getSessionId()));
         } else {
             // Receiver is offline
-            message.setReadStatus(MessageConst.UNREAD);
+            // Update unread list
+            receiver.setUnreadList(ChatUtil.getNewUnreadList(receiver.getUnreadList(), conversation.getUuid(), ChatUtil.UNREAD_ADD));
+            userService.update(receiver);
         }
 
-        // Update conversation
-        Conversation conversation = conversationService.findPrivateByUserUuids(sender.getUuid(), receiver.getUuid());
+        // Message persistence
+        message = messageService.update(message);
+
+        conversation.setLastMessage(message);
+
+        // Conversation persistence
+        conversationService.update(conversation);
+
+        return Response.success(message);
+    }
+
+    private Conversation getConversation(String senderUuid, String receiverUuid) {
+        Conversation conversation = conversationService.findPrivateByUserUuids(senderUuid, receiverUuid);
 
         // Create new conversation
         if (conversation == null) {
             conversation = new Conversation();
+            conversation.setUuid(UUID.randomUUID().toString());
             conversation.setType(ConversationConst.TYPE_PRIVATE);
-            conversation.setUsers(sender.getUuid() + ConversationConst.SPLITTER + receiver.getUuid());
+            conversation.setUsers(senderUuid + ConversationConst.SPLITTER + receiverUuid);
             conversation = conversationService.update(conversation);
         }
 
-        message.setConversationId(conversation.getId());
-        message = messageService.update(message);
-        conversation.setLastMessage(message);
-        conversationService.update(conversation);
-
-        return Response.success(message);
+        return conversation;
     }
 
 }

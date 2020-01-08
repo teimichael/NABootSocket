@@ -15,8 +15,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public List<Message> findByConversationId(Long conversationId) {
-        return messageRepository.findByConversationId(conversationId);
+    public List<Message> findByConversationUuid(String conversationUuid) {
+        return messageRepository.findByConversationUuid(conversationUuid);
     }
 
     @Override

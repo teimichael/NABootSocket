@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    List<Message> findByConversationId(Long conversationId);
+    List<Message> findByConversationUuid(String conversationUuid);
 
     Message update(Message message);
 }

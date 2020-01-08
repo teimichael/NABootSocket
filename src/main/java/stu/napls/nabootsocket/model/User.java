@@ -24,6 +24,9 @@ public class User {
     @Column(name = "sessionId")
     private String sessionId;
 
+    @Column(name = "unreadList")
+    private String unreadList;
+
     @Column(name = "createDate")
     @CreatedDate
     private Date createDate;
