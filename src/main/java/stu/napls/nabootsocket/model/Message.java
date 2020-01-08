@@ -29,6 +29,7 @@ public class Message {
     private String receiver;
 
     @Column(name = "content")
+    @Lob
     private String content;
 
     @Column(name = "timestamp")

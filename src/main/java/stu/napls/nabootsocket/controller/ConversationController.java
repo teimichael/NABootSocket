@@ -23,7 +23,7 @@ public class ConversationController {
     private UserService userService;
 
     @ApiOperation("Get conversation list of user.")
-    @GetMapping("/get/user/{userUuid}")
+    @GetMapping("/get/list/{userUuid}")
     private Response getListByUser(@PathVariable("userUuid") String userUuid) {
         List<Conversation> conversations = conversationService.findByUserUuid(userUuid);
         return Response.success(conversations);
