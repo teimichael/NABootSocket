@@ -33,34 +33,6 @@ public class AccessController {
     @Resource
     private UserService userService;
 
-//    @MessageMapping("/auth")
-//    @SendToUser("/auth")
-//    public Response auth(SocketAuth socketAuth, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-//        AuthVerify authVerify = new AuthVerify();
-//        authVerify.setToken(socketAuth.getToken());
-//        AuthResponse authResponse = authRequest.verify(authVerify);
-//        Assert.isTrue(authResponse != null, HttpStatus.BAD_REQUEST.value(), "Authentication failed.");
-//        Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, HttpStatus.UNAUTHORIZED.value(), authResponse.getMessage());
-//
-//        User user = userService.findUserByUuid(authResponse.getData().toString());
-//        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
-//
-//        user.setSessionId(simpMessageHeaderAccessor.getSessionId());
-//        userService.update(user);
-//
-//        return Response.success("Login successfully.", user);
-//    }
-
-//    @MessageMapping("/unauth")
-//    @SendToUser("/auth")
-//    public Response unauth(SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-//        User user = userService.findUserBySessionId(simpMessageHeaderAccessor.getSessionId());
-//        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "Authentication failed.");
-//        user.setSessionId(null);
-//        userService.update(user);
-//        return Response.success("Logout successfully", user);
-//    }
-
     @PostMapping("/third/register")
     @ResponseBody
     public Response registerFromThird(@RequestBody SocketThirdRegister socketThirdRegister) {
