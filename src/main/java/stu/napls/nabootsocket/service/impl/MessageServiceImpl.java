@@ -17,8 +17,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public List<Message> findByConversationUuid(String conversationUuid, Pageable pageable) {
-        return messageRepository.findByConversationUuid(conversationUuid, pageable);
+    public List<Message> findByConversationUuidOrderByTimestamp(String conversationUuid, Pageable pageable) {
+        return messageRepository.findByConversationUuidOrderByTimestamp(conversationUuid, pageable);
     }
 
     @Override

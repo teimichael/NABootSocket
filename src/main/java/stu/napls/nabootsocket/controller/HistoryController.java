@@ -28,7 +28,7 @@ public class HistoryController {
     })
     @GetMapping("/get/{conversationUuid}")
     private Response getByConversation(@PathVariable("conversationUuid") String conversationUuid, Pageable pageable) {
-        return Response.success(messageService.findByConversationUuid(conversationUuid, pageable));
+        return Response.success(messageService.findByConversationUuidOrderByTimestamp(conversationUuid, pageable));
     }
 
 }

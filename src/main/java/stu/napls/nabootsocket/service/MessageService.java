@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    List<Message> findByConversationUuid(String conversationUuid, Pageable pageable);
+    List<Message> findByConversationUuidOrderByTimestamp(String conversationUuid, Pageable pageable);
 
     Message update(Message message);
 }
