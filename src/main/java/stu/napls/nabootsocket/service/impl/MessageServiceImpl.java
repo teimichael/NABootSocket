@@ -1,5 +1,7 @@
 package stu.napls.nabootsocket.service.impl;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import stu.napls.nabootsocket.model.Message;
 import stu.napls.nabootsocket.repository.MessageRepository;
@@ -15,8 +17,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public List<Message> findByConversationUuid(String conversationUuid) {
-        return messageRepository.findByConversationUuid(conversationUuid);
+    public List<Message> findByConversationUuid(String conversationUuid, Pageable pageable) {
+        return messageRepository.findByConversationUuid(conversationUuid, pageable);
     }
 
     @Override
