@@ -159,4 +159,6 @@ $(function () {
     $("#send-group").click(function () {
         sendGroupMessage();
     });
+    $("#a-register").attr("href", SERVER + "/swagger-ui.html#/access-controller/registerUsingPOST");
+    $("#a-group").attr("href", SERVER + "/swagger-ui.html#/group-controller/createUsingPOST");
 });
