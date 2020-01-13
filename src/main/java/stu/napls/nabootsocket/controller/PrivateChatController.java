@@ -48,6 +48,7 @@ public class PrivateChatController {
         Assert.isTrue(sender != null && message.getSender().equals(sender.getUuid()), "Unauthorized channel.");
         User receiver = userService.findUserByUuid(message.getReceiver());
         Assert.notNull(receiver, "Receiver does not exist.");
+        Assert.isTrue(!sender.getUuid().equals(receiver.getUuid()), "Cannot send messages to self.");
 
         // Set unique fields
         message.setUuid(UUID.randomUUID().toString());
