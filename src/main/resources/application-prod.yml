@@ -11,4 +11,4 @@ appserver:
   url: "*"
 
 webserver:
-  url: http://localhost:8080
+  url: http://web-service:8080
