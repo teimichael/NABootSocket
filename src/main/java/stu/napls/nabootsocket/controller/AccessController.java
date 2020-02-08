@@ -1,11 +1,13 @@
 package stu.napls.nabootsocket.controller;
 
 
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import stu.napls.nabootsocket.auth.annotation.Auth;
 import stu.napls.nabootsocket.auth.model.*;
 import stu.napls.nabootsocket.auth.request.AuthRequest;
@@ -95,7 +97,7 @@ public class AccessController {
     @Auth
     @PostMapping("/logout")
     @ResponseBody
-    public Response logout(HttpSession session) {
+    public Response logout(@ApiIgnore HttpSession session) {
         AuthLogout authLogout = new AuthLogout();
         authLogout.setUuid(session.getAttribute("uuid").toString());
         AuthResponse authResponse = authRequest.logout(authLogout);
