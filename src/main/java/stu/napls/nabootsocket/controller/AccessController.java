@@ -11,6 +11,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import stu.napls.nabootsocket.auth.annotation.Auth;
 import stu.napls.nabootsocket.auth.model.*;
 import stu.napls.nabootsocket.auth.request.AuthRequest;
+import stu.napls.nabootsocket.config.GlobalConstant;
 import stu.napls.nabootsocket.core.dictionary.ResponseCode;
 import stu.napls.nabootsocket.core.dictionary.StatusCode;
 import stu.napls.nabootsocket.core.exception.Assert;
@@ -50,6 +51,7 @@ public class AccessController {
     @ResponseBody
     public Response login(@RequestBody LoginVO loginVO) {
         // Obtain token
+        loginVO.getAuthLogin().setSource(GlobalConstant.SERVICE_ID);
         AuthResponse authResponse = authRequest.login(loginVO.getAuthLogin());
         Assert.notNull(authResponse, "Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
@@ -76,6 +78,7 @@ public class AccessController {
         AuthPreregister authPreregister = new AuthPreregister();
         authPreregister.setUsername(username);
         authPreregister.setPassword(password);
+        authPreregister.setSource(GlobalConstant.SERVICE_ID);
         AuthResponse authResponse = authRequest.preregister(authPreregister);
         Assert.notNull(authResponse, "Preregistering auth server failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
@@ -96,7 +99,6 @@ public class AccessController {
 
     @Auth
     @PostMapping("/logout")
-    @ResponseBody
     public Response logout(@ApiIgnore HttpSession session) {
         AuthLogout authLogout = new AuthLogout();
         authLogout.setUuid(session.getAttribute("uuid").toString());
